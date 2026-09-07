@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Tippy Drop! — Zycon Studios</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8be0ff">
   <meta name="description" content="Tippy Drop! Drop it. Stack it. Don't tip it. by Zycon Studios" />
 </head>
 <body>
@@ -69,5 +71,21 @@
 
   <script src="https://unpkg.com/matter-js@0.19.0/build/matter.min.js"></script>
   <script src="game.js"></script>
+  <script>
+    // Register service worker for PWA support (optional)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(()=>{/* silent */});
+    }
+
+    // Prevent pull to refresh on mobile (some browsers)
+    let lastTouchY = 0;
+    document.addEventListener('touchstart', (e) => { lastTouchY = e.touches[0].clientY; }, {passive:false});
+    document.addEventListener('touchmove', (e) => {
+      const touchY = e.touches[0].clientY;
+      const touchX = e.touches[0].clientX;
+      // block vertical overscroll when at top of the page or interacting with game canvas
+      if (Math.abs(touchX - (window.innerWidth/2)) < window.innerWidth) e.preventDefault();
+    }, {passive:false});
+  </script>
 </body>
 </html>
